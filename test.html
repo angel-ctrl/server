@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Example</title>
+</head>
+<body>
+    <h1>WebSocket Example</h1>
+    <div id="messages"></div>
+    
+    <script>
+        // Obtén el token de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        
+        // URL del servidor WebSocket
+        const socketUrl = 'ws://localhost:8010/API/online/v1?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTc0ODYwNDMsImlkIjoiIiwibmFtZSI6ImFsZnJlZCJ9.QLrZUNAY8xlVTJnq2No7H2Uz_Zoldxehlo7Pd0RKfRU';
+        
+        // Crear una instancia de WebSocket
+        const socket = new WebSocket(socketUrl);
+        
+        // Manejar la conexión exitosa
+        socket.addEventListener('open', (event) => {
+            console.log('Conexión exitosa');
+            showMessage('Conexión exitosa');
+        });
+        
+        // Manejar mensajes entrantes
+        socket.addEventListener('message', (event) => {
+            const message = event.data;
+            console.log('Mensaje recibido: ' + message);
+            showMessage('Mensaje recibido: ' + message);
+        });
+        
+        // Manejar errores
+        socket.addEventListener('error', (event) => {
+            console.error('Error de conexión', event);
+            showMessage('Error de conexión');
+        });
+        
+        // Manejar cierre de la conexión
+        socket.addEventListener('close', (event) => {
+            if (event.wasClean) {
+                console.log('Conexión cerrada limpiamente');
+                showMessage('Conexión cerrada limpiamente');
+            } else {
+                console.error('Conexión interrumpida');
+                showMessage('Conexión interrumpida');
+            }
+        });
+        
+        function showMessage(message) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML += message + '<br>';
+        }
+    </script>
+</body>
+</html>

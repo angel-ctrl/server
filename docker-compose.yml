@@ -1,0 +1,31 @@
+version: '3.5'
+services:
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx-config:/etc/nginx/conf.d
+    depends_on:
+      - server
+
+  server:
+    image: server:server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - HOST=
+      - PORT=8010
+      - hostDB=host.docker.internal
+      - portDB=5432
+      - database=postgres
+      - user=root
+      - password=angel0510
+      - SECRET_KEY_JWT=72fb69eb-a923-486c-9701-10331d68e778
+      - PongWait=420
+      - MaxMessageSize=1024
+      - Secret=6^N^KRfn-i-pA2E2O#u5
+    ports:
+      - "8010:8010"
