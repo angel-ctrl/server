@@ -112,39 +112,3 @@ func (w *Hub) DisconnectUser(username string) {
 	}
 	w.mu.Unlock()
 }
-
-/*func (u *Client) aliveConection(pingTicker *time.Ticker) {
-
-	for {
-
-		<-pingTicker.C
-		if err := u.sendMsgMutex([]byte{}, 0); err != nil {
-			fmt.Println("ping: ", err)
-		}
-
-	}
-
-}*/
-
-func (u *Client) sendMsgMutex(msg []byte, pingmsg int) error {
-	u.mu.Lock()
-	defer u.mu.Unlock()
-
-	if pingmsg == 0 {
-
-		err := u.Connection.WriteMessage(websocket.PingMessage, []byte{})
-		if err != nil {
-			return err
-		}
-
-	} else {
-
-		err := u.Connection.WriteMessage(websocket.BinaryMessage, msg)
-		if err != nil {
-			return err
-		}
-
-	}
-
-	return nil
-}

@@ -1,6 +1,7 @@
 package online
 
 import (
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -19,7 +20,7 @@ type Client struct {
 func (u *Client) OnLine(w *Hub) {
 
 	pongWait := time.Duration(w.Env.PongWait) * time.Second
-	pingPeriod := (pongWait * 9) / 15
+	pingPeriod := (pongWait * 9) / 20
 
 	u.Connection.SetReadLimit(int64(w.Env.MaxMessageSize))
 	u.Connection.SetReadDeadline(time.Now().Add(pongWait))
@@ -28,7 +29,7 @@ func (u *Client) OnLine(w *Hub) {
 
 	pingTicker := time.NewTicker(pingPeriod)
 
-	//go u.aliveConection(pingTicker)
+	go u.aliveConection(pingTicker)
 
 	for {
 		_, _, err := u.Connection.ReadMessage()
@@ -57,4 +58,40 @@ func (u *Client) OnLine(w *Hub) {
 	}
 
 	w.chanel.LeaveChanel <- u
+}
+
+func (u *Client) aliveConection(pingTicker *time.Ticker) {
+
+	for {
+
+		<-pingTicker.C
+		if err := u.sendMsgMutex([]byte{}, 0); err != nil {
+			fmt.Println("ping: ", err)
+		}
+
+	}
+
+}
+
+func (u *Client) sendMsgMutex(msg []byte, pingmsg int) error {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+
+	if pingmsg == 0 {
+
+		err := u.Connection.WriteMessage(websocket.PingMessage, []byte{})
+		if err != nil {
+			return err
+		}
+
+	} else {
+
+		err := u.Connection.WriteMessage(websocket.BinaryMessage, msg)
+		if err != nil {
+			return err
+		}
+
+	}
+
+	return nil
 }
