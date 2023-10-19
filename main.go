@@ -22,8 +22,8 @@ func main(){
 	go Hub.UsersManager()
 
 	gin := gin.Default()
-	httpService := routers.NewHttpSetup(gin, Env, user_services_var)
-	httpService.Setup(Hub)
+	httpService := routers.NewHttpSetup(gin, Env, user_services_var, Hub)
+	httpService.Setup()
 
 	gin.Run(Env.Host + ":" + Env.Port)
 

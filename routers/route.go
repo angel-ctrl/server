@@ -13,17 +13,19 @@ type HttpSetup struct {
 	Gin    *gin.Engine
 	Env    *config.Env
 	UserDB user_services.UserPort
+	Hub *user_online.Hub
 }
 
-func NewHttpSetup(gin *gin.Engine, env *config.Env, user_DB user_services.UserPort) *HttpSetup {
+func NewHttpSetup(gin *gin.Engine, env *config.Env, user_DB user_services.UserPort, hub *user_online.Hub) *HttpSetup {
 	return &HttpSetup{
 		Gin:    gin,
 		Env:    env,
 		UserDB: user_DB,
+		Hub: hub,
 	}
 }
 
-func (d *HttpSetup) Setup(hub *user_online.Hub) {
+func (d *HttpSetup) Setup() {
 
 	publicRouter := d.Gin.Group("API")
 	// All Public APIs
@@ -32,7 +34,7 @@ func (d *HttpSetup) Setup(hub *user_online.Hub) {
 	d.NewLoginRouter(publicRouter)
 	d.NewUpdatePlanRouter(publicRouter)
 	d.NewBanUserRouter(publicRouter)
-	publicRouter.GET("/online/v1", hub.HandlerWebSocket)
+	publicRouter.GET("/online/v1", d.Hub.HandlerWebSocket)
 
 	/*
 		protectedRouter := gin.Group("")

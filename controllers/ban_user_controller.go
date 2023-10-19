@@ -7,11 +7,14 @@ import (
 
 	user_services "server/services"
 
+	user_online "server/online"
+
 	"github.com/gin-gonic/gin"
 )
 
 type BanUserController struct {
 	User_DB user_services.UserPort
+	Hub *user_online.Hub
 }
 
 func (uc *BanUserController) BanUser(c *gin.Context) {
@@ -41,6 +44,8 @@ func (uc *BanUserController) BanUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al actualizar el plan"})
 		return
 	}
+
+	uc.Hub.DisconnectUser(User.Username)
 
 	c.JSON(http.StatusOK, gin.H{"message": "user actualizado exitosamente"})
 }
