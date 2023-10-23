@@ -8,28 +8,16 @@ on:
 
 jobs:
 
-  build:
-    name: Build Docker image and push to repositories
+   deploy:
     runs-on: ubuntu-latest
-
+    name: Continuous Deployment
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-  
-      - name: login to hub  
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          
-      - name: deploying
-        uses: appleboy/ssh-action@v0.1.8
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
           script: |
-            docker stop server_main
-            docker rm server_main
-            docker-compose up -d
+            cd home/server/;git pull
