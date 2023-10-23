@@ -57,7 +57,7 @@ func AuthMiddleware(User_DB services.UserPort) gin.HandlerFunc {
 		}
 
 		if user.Plan.Before(time.Now()) {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "El plan ha caducado"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "El plan ha caducadooo"})
 			c.Abort()
 			return
 		}
