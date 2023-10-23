@@ -22,13 +22,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: antonyanlinux/myapp:latest
-          
       - name: deploying
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -37,4 +30,6 @@ jobs:
           password: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            docker container ls -a
+            docker stop server_main
+            docker rm server_main
+            docker-compose up -d
