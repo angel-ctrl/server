@@ -23,3 +23,7 @@ jobs:
             cd /
             cd home/server
             git pull
+            docker stop server_main
+            docker rm server_main
+            docker rmi server:server
+            docker-compose up -d server
