@@ -20,4 +20,4 @@ jobs:
           password: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            ls
+            cd..;ls
