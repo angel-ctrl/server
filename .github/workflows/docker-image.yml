@@ -20,4 +20,4 @@ jobs:
           password: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd home/server/;git pull
+            cd home/server
