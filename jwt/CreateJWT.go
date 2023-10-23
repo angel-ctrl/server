@@ -11,8 +11,6 @@ import (
 
 func CreateJWT(User *user_domain.Users, config *configs.Env) (string, error) {
 
-	//hola
-
 	// Set the secret key to sign the token
 	miClave := []byte(config.SecretKeyJWT)
 
